@@ -1,33 +1,60 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
+Object.defineProperty(exports, "__esModule", { value: true });
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const vscode = require('vscode');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
+
+//main activation function
 function activate(context) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "number-converter-check" is now active!');
+	var enableExtension = false;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('number-converter-check.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
+    vscode.commands.registerCommand('extension.enableNumberconverter', () => {
+        vscode.window.showInformationMessage('Number Converter Enabled');
+        enableExtension = true;
+		console.log('Congratulations, your extension "number-converter-check" is now active!');
+    });
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from number_converter_check!');
-	});
+    vscode.commands.registerCommand('extension.disableNumberconverter', () => {
+        enableExtension = false;
+        vscode.window.showInformationMessage('Number Converter Disabled');
+    });
 
-	context.subscriptions.push(disposable);
+	var regexHex = /^0x[0-9a-fA-F]+$/g;
+    var regexBin = /^[0-9a-fA-F]+[h]$/g;
+    var regexDec = /^-?[0-9]+$/g;
+
+	let hover = vscode.languages.registerHoverProvider({ scheme: '*', language: '*' }, {
+        provideHover(document, position, token) {
+            
+			var hoveredWord = document.getText(document.getWordRangeAtPosition(position));
+            var markdownString = new vscode.MarkdownString();
+			var input = Number(hoveredWord.toString());
+
+			if ((regexHex.test(hoveredWord.toString()) || regexBin.test(hoveredWord.toString())) && enableExtension) {
+				var input = Number(hoveredWord.toString());
+                markdownString.appendCodeblock(`Dec: ${parseInt(hoveredWord, 16)}\nHex: 0x${input.toString(16).toUpperCase()}\nBinary: 0b${parseInt(hoveredWord, 16).toString(2)}`, 'javascript');
+                
+				return {
+                    contents: [markdownString]
+                };
+            }
+			
+            else if (regexDec.test(hoveredWord.toString()) && enableExtension) {
+                markdownString.appendCodeblock(`Dec: ${hoveredWord}\nHex: 0x${input.toString(16).toUpperCase()}\nBinary: 0b${input.toString(2).replace(/(^\s+|\s+$)/, '')} `, 'javascript');
+                
+				return {
+                    contents: [markdownString]
+                };
+            }
+        }
+    });
+
+	context.subscriptions.push(hover);
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {

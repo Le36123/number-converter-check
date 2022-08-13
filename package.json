@@ -3,36 +3,52 @@
   "displayName": "number_converter_check",
   "description": "Check numbers decimal, hexadecimal, and binary value on hover",
   "version": "0.0.1",
+  "publisher": "Le36123",
+    "repository": "https://github.com/Le36123/number-converter-check",
+    "homepage": "https://github.com/Le36123/number-converter-check",
   "engines": {
     "vscode": "^1.70.0"
   },
   "categories": [
+    "Programming Languages",
     "Other"
   ],
   "activationEvents": [
-    "onCommand:number-converter-check.helloWorld"
+    "onCommand:extension.enableNumberconverter"
   ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "number-converter-check.helloWorld",
-      "title": "Hello World"
-    }]
+      "commands": [
+        {
+          "command": "extension.enableNumberconverter",
+          "title": "Number Converter Check: Enable Extension"
+        },
+        {
+          "command": "extension.disableNumberconverter",
+          "title": "Number Converter Check: Disable Extension "
+        }
+
+    ]
   },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "node ./test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.70.0",
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "16.x",
-    "eslint": "^8.20.0",
-    "glob": "^8.0.3",
-    "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
-    "@vscode/test-electron": "^2.1.5"
-  }
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "lint": "eslint src --ext ts",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.1",
+        "@types/mocha": "^7.0.1",
+        "@types/node": "^12.11.7",
+        "@types/vscode": "^1.43.0",
+        "eslint": "^6.8.0",
+        "@typescript-eslint/parser": "^2.18.0",
+        "@typescript-eslint/eslint-plugin": "^2.18.0",
+        "glob": "^7.1.6",
+        "mocha": "^7.0.1",
+        "typescript": "^3.7.5",
+        "vscode-test": "^1.3.0"
+    }
 }
